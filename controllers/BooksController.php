@@ -58,7 +58,7 @@ class BooksController extends Controller
      */
     public function actionView($id)
     {
-        $model = Books::find()->select('*')->where(['books.id' => $id])->with('authors')->one();
+        $model = $this->findModel($id);
 
         return $this->render('view', [
             'model' => $model,
@@ -109,7 +109,7 @@ class BooksController extends Controller
 
             $model->save();
 
-            $book = Books::find()->select('*')->where(['books.id' => $id])->with('authors')->one();
+            $book = $this->findModel($id);
 
             $newAuthorIdArr = $model->authorsArr;
             $existAuthorIdArr = [];
@@ -118,8 +118,6 @@ class BooksController extends Controller
                 array_push($existAuthorIdArr, $author->id);
             }
 
-            //1 2 3
-            // 2 3 4
             foreach ($newAuthorIdArr as $newBookId) {
                 $cond = true;
                 foreach ($existAuthorIdArr as $key => $existBookId) {
@@ -139,14 +137,10 @@ class BooksController extends Controller
 
             }
 
-            foreach ($existAuthorIdArr as $authorId) {
-                $book_author = BooksAuthors::findOne(['book_id' => $id, 'author_id' => $authorId])->delete();
-            }
+            BooksAuthors::deleteAll(['book_id' => $id, 'author_id' => $existAuthorIdArr]);
 
             return $this->redirect('index');
         }
-
-        $modelAuthors = Books::find()->where(['id' => $id])->with('authors')->all();
 
         return $this->render('update', [
             'model' => $model,
