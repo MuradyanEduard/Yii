@@ -105,16 +105,12 @@ class BooksController extends Controller
         //Books Update
         $model = $this->findModel($id);
 
-        if ($model->load($this->request->post())) {
-
-            $model->save();
-
-            $book = $this->findModel($id);
+        if ($model->load($this->request->post()) && $model->save()) {
 
             $newAuthorIdArr = $model->authorsArr;
             $existAuthorIdArr = [];
 
-            foreach ($book->authors as $author) {
+            foreach ($model->authors as $author) {
                 array_push($existAuthorIdArr, $author->id);
             }
 
