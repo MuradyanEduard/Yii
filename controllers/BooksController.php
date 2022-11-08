@@ -82,6 +82,7 @@ class BooksController extends Controller
                 $book_author->author_id = $authorId;
                 $book_author->save();
             }
+            return $this->redirect('index');
         } else {
             $model->loadDefaultValues();
         }
