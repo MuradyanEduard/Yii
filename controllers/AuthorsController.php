@@ -73,6 +73,7 @@ class AuthorsController extends Controller
     //Create author
     public function actionCreate()
     {
+
         $model = new Authors();
 
         if ($this->request->isPost) {

@@ -48,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             <?php $form = ActiveForm::begin(['action' => ['books/create'], 'method' => 'post',]);
             ?>
-            <?=  $form->field($model, 'id')->hiddenInput()->label(false); ?>
+            <?= $form->field($model, 'id')->hiddenInput()->label(false); ?>
             <?= $form->field($model, 'authorsArr')->widget(Select2::className(), [
                 'name' => 'authorsArr',
                 'data' => ArrayHelper::map($modelAddAuthors, 'id', 'name'),
@@ -66,7 +66,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
         </div>
     </div>
-
 
 
 <?php \app\widgets\AuthorList::begin(['book' => $model]) ?>

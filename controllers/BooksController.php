@@ -131,29 +131,51 @@ class BooksController extends Controller
         //Books Update
         $model = $this->findModel($id);
 
-        if (isset($this->request->post()['Authors'])) {
-            //Author Updates
-            $authors = $this->request->post()['Authors'];
-            for ($i = 0; $i < count($authors['id']); $i++) {
-                $author = Authors::findOne(['id' => $authors['id'][$i]]);
-                $author->name = $authors['name'][$i];
-                $author->booksArr = [''];
-                $author->save();
+        if ($model->load($this->request->post())) {
+
+            $model->save();
+
+            $book = Books::find()->select('*')->where(['books.id' => $id])->with('authors')->one();
+
+            $newAuthorIdArr = $model->authorsArr;
+            $existAuthorIdArr = [];
+
+            foreach ($book->authors as $author) {
+                array_push($existAuthorIdArr, $author->id);
             }
 
-            //Book Update
-            if ($this->request->isPost && $model->load($this->request->post())) {
-                $model->save();
+            //1 2 3
+            // 2 3 4
+            foreach ($newAuthorIdArr as $newBookId) {
+                $cond = true;
+                foreach ($existAuthorIdArr as $key => $existBookId) {
+                    if ($newBookId == $existBookId) {
+                        $cond = false;
+                        unset($existAuthorIdArr[$key]);
+                        break;
+                    }
+                }
+
+                if ($cond) {
+                    $book_author = new BooksAuthors();
+                    $book_author->book_id = $model->id;
+                    $book_author->author_id = $newBookId;
+                    $book_author->save();
+                }
+
             }
 
-            return $this->redirect(['view', 'id' => $model->id]);
+            foreach ($existAuthorIdArr as $authorId) {
+                $book_author = BooksAuthors::findOne(['book_id' => $id, 'author_id' => $authorId])->delete();
+            }
+
+            return $this->redirect('index');
         }
 
         $modelAuthors = Books::find()->where(['id' => $id])->with('authors')->all();
 
         return $this->render('update', [
             'model' => $model,
-            'modelAuthors' => $modelAuthors[0]["authors"],
         ]);
     }
 
