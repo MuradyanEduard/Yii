@@ -25,17 +25,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <h1><?= Html::encode($this->title) ?></h1>
 
-        <p>
-            <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-            <?= Html::a('Delete', ['delete', 'id' => $model->id], [
-                'class' => 'btn btn-danger',
-                'data' => [
-                    'confirm' => 'Are you sure you want to delete this item?',
-                    'method' => 'post',
-                ],
-            ]) ?>
-        </p>
-
         <?= DetailView::widget([
             'model' => $model,
             'attributes' => [
@@ -44,27 +33,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ]) ?>
 
-        <div class="book-form">
-
-            <?php $form = ActiveForm::begin(['action' => ['books/create'], 'method' => 'post',]);
-            ?>
-            <?= $form->field($model, 'id')->hiddenInput()->label(false); ?>
-            <?= $form->field($model, 'authorsArr')->widget(Select2::className(), [
-                'name' => 'authorsArr',
-                'data' => ArrayHelper::map($modelAddAuthors, 'id', 'name'),
-                'options' => [
-                    'placeholder' => 'Select Authors ...',
-                    'multiple' => true
-                ],
-            ]); ?>
-
-            <div class="form-group">
-                <?= Html::submitButton('Add', ['class' => 'btn btn-success']) ?>
-            </div>
-
-            <?php ActiveForm::end(); ?>
-
-        </div>
     </div>
 
 

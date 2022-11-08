@@ -60,22 +60,8 @@ class BooksController extends Controller
     {
         $model = Books::find()->select('*')->where(['books.id' => $id])->with('authors')->one();
 
-        //Get all not related authors
-        $arr = \app\models\Books::find()->with('authors')->where(['books.id' => $id])
-            ->asArray()->all();
-        $authorId = [];
-
-        foreach ($arr as $row) {
-            foreach ($row['authors'] as $authors) {
-                array_push($authorId, $authors['id']);
-            }
-        }
-
-        $modelAddAuthors = \app\models\Authors::find()->where(['NOT', ['id' => $authorId]])->asArray()->all();
-
         return $this->render('view', [
             'model' => $model,
-            'modelAddAuthors' => $modelAddAuthors,
         ]);
     }
 
@@ -89,26 +75,13 @@ class BooksController extends Controller
     {
         $model = new Books();
 
-        //Current Book add Author
-        if ($model->load($this->request->post()) && isset($model->id)) {
+        if ($model->load($this->request->post()) && $model->save()) {
             foreach ($model->authorsArr as $authorId) {
                 $book_author = new BooksAuthors();
                 $book_author->book_id = $model->id;
                 $book_author->author_id = $authorId;
                 $book_author->save();
             }
-            return $this->redirect('index');
-        }//New Book Create
-        else if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                foreach ($model->authorsArr as $authorId) {
-                    $book_author = new BooksAuthors();
-                    $book_author->book_id = $model->id;
-                    $book_author->author_id = $authorId;
-                    $book_author->save();
-                }
-            }
-            return $this->redirect('index');
         } else {
             $model->loadDefaultValues();
         }
