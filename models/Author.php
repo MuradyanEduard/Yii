@@ -10,9 +10,9 @@ use Yii;
  * @property int $id
  * @property string $name
  *
- * @property BooksAuthors[] $bookAuthors
+ * @property BookAuthors[] $bookAuthors
  */
-class Authors extends \yii\db\ActiveRecord
+class Author extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -56,12 +56,12 @@ class Authors extends \yii\db\ActiveRecord
      */
     public function getBooksAuthors()
     {
-        return $this->hasMany(BooksAuthors::class, ['author_id' => 'id']);
+        return $this->hasMany(BookAuthors::class, ['author_id' => 'id']);
     }
 
     public function getBooks()
     {
-        return $this->hasMany(Books::class, ['id' => 'book_id'])
+        return $this->hasMany(Book::class, ['id' => 'book_id'])
             ->via('booksAuthors');
     }
 }

@@ -14,7 +14,7 @@ use Yii;
  * @property string|null $img
  * @property string|null $date
  */
-class Books extends \yii\db\ActiveRecord
+class Book extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -60,12 +60,12 @@ class Books extends \yii\db\ActiveRecord
 
     public function getBooksAuthors()
     {
-        return $this->hasMany(BooksAuthors::class, ['book_id' => 'id']);
+        return $this->hasMany(BookAuthors::class, ['book_id' => 'id']);
     }
 
     public function getAuthors()
     {
-        return $this->hasMany(Authors::class, ['id' => 'author_id'])
+        return $this->hasMany(Author::class, ['id' => 'author_id'])
             ->via('booksAuthors');
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
-use app\models\Authors;
-use app\models\Books;
+use app\models\Author;
+use app\models\Book;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -9,7 +9,7 @@ use yii\grid\GridView;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var app\models\AuthorsSearch $searchModel */
+/** @var app\models\AuthorSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 $this->title = 'Authors';
@@ -43,11 +43,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     $books = implode(", ", $books);
                     return $books;
                 },
-                'filter' => yii\helpers\ArrayHelper::map(Books::find()->all(), 'id', 'name'),
+                'filter' => yii\helpers\ArrayHelper::map(Book::find()->all(), 'id', 'name'),
             ],
             [
                 'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Authors $model, $key, $index, $column) {
+                'urlCreator' => function ($action, Author $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                 }
             ],

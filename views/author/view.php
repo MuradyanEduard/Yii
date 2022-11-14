@@ -1,6 +1,6 @@
 <?php
 
-use app\models\Books;
+use app\models\Book;
 use kartik\select2\Select2;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
@@ -11,7 +11,7 @@ use yii\widgets\ActiveForm;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
-/** @var app\models\Authors $model */
+/** @var app\models\Author $model */
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Authors', 'url' => ['index']];

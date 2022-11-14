@@ -20,7 +20,8 @@
         "2amigos/yii2-selectize-widget": "~1.0",
         "yiisoft/yii2-bootstrap4": "^2.0",
         "yiisoft/yii2-bootstrap5": "^2.0",
-        "conquer/select2": "*"
+        "conquer/select2": "*",
+        "mdmsoft/yii2-admin": "~1.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
@@ -34,7 +35,8 @@
         "codeception/module-filesystem": "^3.0 || ^1.1",
         "codeception/verify": "^2.2",
         "symfony/browser-kit": "^6.0 || >=2.7 <=4.2.4",
-        "kartik-v/yii2-widget-select2": "@dev"
+        "kartik-v/yii2-widget-select2": "@dev",
+        "johnitvn/yii2-rbac-plus": "*"
     },
     "config": {
         "allow-plugins": {

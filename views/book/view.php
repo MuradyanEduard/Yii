@@ -1,6 +1,6 @@
 <?php
 
-use app\models\Authors;
+use app\models\Author;
 use conquer\select2\Select2Widget;
 use kartik\select2\Select2;
 use yii\grid\ActionColumn;
@@ -12,7 +12,7 @@ use yii\widgets\ActiveForm;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
-/** @var app\models\Books $model */
+/** @var app\models\Book $model */
 
 
 $this->title = $model->name;

@@ -4,12 +4,12 @@ namespace app\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Authors;
+use app\models\Author;
 
 /**
  * AuthorSearch represents the model behind the search form of `app\models\Author`.
  */
-class AuthorsSearch extends Authors
+class AuthorSearch extends Author
 {
     /**
      * {@inheritdoc}
@@ -42,7 +42,7 @@ class AuthorsSearch extends Authors
      */
     public function searchById($id)
     {
-        $query = Authors::find()->where(['id' => $id]);
+        $query = Author::find()->where(['id' => $id]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -53,7 +53,7 @@ class AuthorsSearch extends Authors
 
     public function search($params)
     {
-        $query = Authors::find();
+        $query = Author::find();
 
         // add conditions that should always apply here
         $dataProvider = new ActiveDataProvider([

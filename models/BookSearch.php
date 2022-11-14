@@ -2,13 +2,14 @@
 
 namespace app\models;
 
+use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
 /**
  * BooksSearch represents the model behind the search form of `common\models\Books`.
  */
-class BooksSearch extends Books
+class BookSearch extends Book
 {
     /**
      * {@inheritdoc}
@@ -41,7 +42,7 @@ class BooksSearch extends Books
      */
     public function searchById($id)
     {
-        $query = Books::find()->where(['id' => $id]);
+        $query = Book::find()->where(['id' => $id]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -53,7 +54,7 @@ class BooksSearch extends Books
 
     public function search($params)
     {
-        $query = Books::find();
+        $query = Book::find();
         // add conditions that should always apply here
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -72,6 +73,30 @@ class BooksSearch extends Books
             'books.name' => $this->name,
         ]);
         $query->andFilterWhere(['in', 'author_id', $this->authors]);
+        return $dataProvider;
+    }
+
+    public function searchByAuthorId($params,$authorId)
+    {
+        $query = Book::find()->joinWith('authors')->where(['authors.id' => $authorId]);
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+        ]);
+
+        $this->load($params);
+        if (!$this->validate()) {
+            return $dataProvider;
+        }
+        $query->joinWith(['authors']);
+
+        $query->andFilterWhere([
+            'books.id' => $this->id,
+            'books.name' => $this->name,
+        ]);
+
+        $query->andFilterWhere(['in', 'author_id', $this->authors]);
+
         return $dataProvider;
     }
 }

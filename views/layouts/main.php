@@ -1,6 +1,7 @@
 <?php
 
 /** @var yii\web\View $this */
+
 /** @var string $content */
 
 use app\assets\AppAsset;
@@ -32,29 +33,49 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => '@w
 <header id="header">
     <?php
     NavBar::begin([
-        'brandLabel' => Yii::$app->name,
-        'brandUrl' => Yii::$app->homeUrl,
+        /*'brandLabel' => Yii::$app->name,
+        'brandUrl' => Yii::$app->homeUrl,*/
         'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top']
     ]);
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav'],
-        'items' => [
-            ['label' => 'Book List', 'url' => ['/books/index']],
-            ['label' => 'Author List', 'url' => ['/authors/index']],
-            ['label' => 'Create Book', 'url' => ['/books/create']],
-            ['label' => 'Create Author', 'url' => ['/authors/create']],
-           /* Yii::$app->user->isGuest
-                ? ['label' => 'Login', 'url' => ['/site/login']]
-                : '<li class="nav-item">'
-                    . Html::beginForm(['/site/logout'])
+
+    if (!Yii::$app->user->isGuest) {
+        if (Yii::$app->user->getIdentity()->role == 0) {
+            echo Nav::widget([
+                'options' => ['class' => 'navbar-nav'],
+                'items' => [
+                    ['label' => 'Book List', 'url' => ['/book/index']],
+                    ['label' => 'Create Book', 'url' => ['/book/create']],
+                    ['label' => 'Author List', 'url' => ['/author/index']],
+                    ['label' => 'Create Author', 'url' => ['/author/create']],
+                    '<li class="nav-item">'
+                    . Html::beginForm(['/auth/logout'])
                     . Html::submitButton(
-                        'Logout (' . Yii::$app->user->identity->username . ')',
+                        'Logout (' . Yii::$app->user->identity->login . ')',
                         ['class' => 'nav-link btn btn-link logout']
                     )
                     . Html::endForm()
-                    . '</li>'*/
-        ]
-    ]);
+                    . '</li>'
+                ]
+            ]);
+        } else {
+            echo Nav::widget([
+                'options' => ['class' => 'navbar-nav'],
+                'items' => [
+                    ['label' => 'Book List', 'url' => ['/book/index']],
+                    ['label' => 'Create Book', 'url' => ['/book/create']],
+                    '<li class="nav-item">'
+                    . Html::beginForm(['/auth/logout'])
+                    . Html::submitButton(
+                        'Logout (' . Yii::$app->user->identity->login . ')',
+                        ['class' => 'nav-link btn btn-link logout']
+                    )
+                    . Html::endForm()
+                    . '</li>'
+                ]
+            ]);
+
+        }
+    }
     NavBar::end();
     ?>
 </header>

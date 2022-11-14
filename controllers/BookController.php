@@ -2,10 +2,14 @@
 
 namespace app\controllers;
 
-use app\models\Authors;
-use app\models\Books;
-use app\models\BooksAuthors;
-use app\models\BooksSearch;
+use app\models\Author;
+use app\models\AuthorSearch;
+use app\models\Book;
+use app\models\BookAuthors;
+use app\models\BookSearch;
+use app\models\User;
+use Yii;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -13,36 +17,58 @@ use yii\filters\VerbFilter;
 /**
  * BookController implements the CRUD actions for Book model.
  */
-class BooksController extends Controller
+class BookController extends Controller
 {
     /**
      * @inheritDoc
      */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
+        return [
+            'access' => [
+                'class' => AccessControl::class,
+                'only' => ['index', 'create','update', 'delete','view'],
+                'rules' => [
+                    [
+                        'allow' => false,
+                        'actions' => ['index', 'create','update', 'delete','view'],
+                        'roles' => ['?'],
+                        'denyCallback' => function ($rule, $action) {
+                            $this->redirect(['auth/login']);
+                        }
+                    ],
+                    [
+                        'allow' => true,
+                        'actions' => ['index', 'create','update', 'delete','view'],
+                        'roles' => ['@'],
                     ],
                 ],
-
-            ]
-        );
+            ],
+        ];
     }
+
 
     /**
      * Lists all Book models.
      *
      * @return string
      */
+
     public function actionIndex()
     {
-        $searchModel = new BooksSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+        $searchModel = [];
+        $dataProvider = [];
+
+        switch (Yii::$app->user->getIdentity()->role) {
+            case User::ADMIN_ROLE:
+                $searchModel = new BookSearch();
+                $dataProvider = $searchModel->search($this->request->queryParams);
+                break;
+            case User::USER_ROLE:
+                $searchModel = new BookSearch();
+                $dataProvider = $searchModel->searchByAuthorId($this->request->queryParams, Yii::$app->user->getIdentity()->author_id);
+                break;
+        }
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -58,6 +84,9 @@ class BooksController extends Controller
      */
     public function actionView($id)
     {
+        if(Yii::$app->user->getIdentity()->getId() == $id)
+            $this->redirect('book/index');
+
         $model = $this->findModel($id);
 
         return $this->render('view', [
@@ -73,11 +102,14 @@ class BooksController extends Controller
     //Create Book
     public function actionCreate()
     {
-        $model = new Books();
+        $model = new Book();
+
+        if(Yii::$app->user->getIdentity()->role == User::USER_ROLE)
+            $model->authorsArr = [Yii::$app->user->getIdentity()->author_id];
 
         if ($model->load($this->request->post()) && $model->save()) {
             foreach ($model->authorsArr as $authorId) {
-                $book_author = new BooksAuthors();
+                $book_author = new BookAuthors();
                 $book_author->book_id = $model->id;
                 $book_author->author_id = $authorId;
                 $book_author->save();
@@ -125,7 +157,7 @@ class BooksController extends Controller
                 }
 
                 if ($cond) {
-                    $book_author = new BooksAuthors();
+                    $book_author = new BookAuthors();
                     $book_author->book_id = $model->id;
                     $book_author->author_id = $newBookId;
                     $book_author->save();
@@ -133,7 +165,7 @@ class BooksController extends Controller
 
             }
 
-            BooksAuthors::deleteAll(['book_id' => $id, 'author_id' => $existAuthorIdArr]);
+            BookAuthors::deleteAll(['book_id' => $id, 'author_id' => $existAuthorIdArr]);
 
             return $this->redirect('index');
         }
@@ -162,12 +194,12 @@ class BooksController extends Controller
      * Finds the Book model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID
-     * @return Books the loaded model
+     * @return Book the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Books::findOne(['id' => $id])) !== null) {
+        if (($model = Book::findOne(['id' => $id])) !== null) {
             return $model;
         }
 

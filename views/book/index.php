@@ -1,12 +1,12 @@
 <?php use yii\helpers\Html;
 use yii\grid\GridView;
-use app\models\BooksSearch;
-use app\models\Authors;
+use app\models\BookSearch;
+use app\models\Author;
 
 use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\Books */
+/* @var $searchModel app\models\Book */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 $this->title = 'Books';
 $this->params['breadcrumbs'][] = $this->title;
@@ -36,20 +36,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     $authors = implode(", ", $authors);
                     return $authors;
                 },
-                'filter' => yii\helpers\ArrayHelper::map(Authors::find()->all(), 'id', 'name'),
+                'filter' => Yii::$app->user->getIdentity()->role == 0? yii\helpers\ArrayHelper::map(Author::find()->all(), 'id', 'name')
+                    : yii\helpers\ArrayHelper::map(Author::find()->where(['id' =>
+                    Yii::$app->user->getIdentity()->author_id])->all(), 'id', 'name'),
             ],
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
     <?php Pjax::end(); ?>
-
-
-    <!--             [
-            'class' => ActionColumn::className(),
-            'urlCreator' => function ($action, Books $model, $key, $index, $column) {
-                if ($action == 'delete')
-                    return Url::to(['books/' . $action, 'id' => $model]);
-                else
-                    return Url::to(['books/' . $action, 'id' => $model->id]);
-            }
-        ], -->

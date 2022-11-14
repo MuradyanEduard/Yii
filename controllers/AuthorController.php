@@ -2,10 +2,14 @@
 
 namespace app\controllers;
 
-use app\models\Authors;
-use app\models\AuthorsSearch;
-use app\models\Books;
-use app\models\BooksAuthors;
+use app\models\Author;
+use app\models\AuthorSearch;
+use app\models\Book;
+use app\models\BookAuthors;
+use app\models\User;
+use Yii;
+use yii\filters\AccessControl;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -13,24 +17,48 @@ use yii\filters\VerbFilter;
 /**
  * AuthorController implements the CRUD actions for Author model.
  */
-class AuthorsController extends Controller
+class AuthorController extends Controller
 {
     /**
      * @inheritDoc
      */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
-                    ],
+        $behaviors['verbs'] = [
+            'class' => VerbFilter::class,
+            'actions' => [
+                'delete' => ['POST'],
+            ],
+        ];
+        $behaviors['access'] = [
+            'class' => AccessControl::class,
+            'only' => ['index', 'create', 'update', 'delete', 'view'],
+            'rules' => [
+                [
+                    'allow' => false,
+                    'actions' => ['index', 'create', 'update', 'delete', 'view'],
+                    'roles' => ['?'],
+                    'denyCallback' => function ($rule, $action) {
+                        $this->redirect(['auth/login']);
+                    }
                 ],
-            ]
-        );
+                [
+                    'allow' => true,
+                    'roles' => ['@'],
+                    'actions' => ['index', 'create', 'update', 'delete', 'view'],
+                    'matchCallback' => function ($rule, $action) {
+                        if (Yii::$app->user->getIdentity()->role == User::USER_ROLE)
+                            $this->redirect(['book/index']);
+
+                        return true;
+                    }
+                ],
+
+            ],
+
+        ];
+
+        return $behaviors;
     }
 
     /**
@@ -40,9 +68,9 @@ class AuthorsController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new AuthorsSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
 
+        $searchModel = new AuthorSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -57,7 +85,7 @@ class AuthorsController extends Controller
      */
     public function actionView($id)
     {
-        $model = Authors::find()->select('*')->where(['authors.id' => $id])->with('books')->one();
+        $model = Author::find()->select('*')->where(['authors.id' => $id])->with('books')->one();
 
         return $this->render('view', [
             'model' => $this->findModel($id),
@@ -74,7 +102,7 @@ class AuthorsController extends Controller
     public function actionCreate()
     {
 
-        $model = new Authors();
+        $model = new Author();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
@@ -129,12 +157,12 @@ class AuthorsController extends Controller
      * Finds the Author model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID
-     * @return Authors the loaded model
+     * @return Author the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Authors::findOne(['id' => $id])) !== null) {
+        if (($model = Author::findOne(['id' => $id])) !== null) {
             return $model;
         }
 
