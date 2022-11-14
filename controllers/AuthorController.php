@@ -35,20 +35,12 @@ class AuthorController extends Controller
             'only' => ['index', 'create', 'update', 'delete', 'view'],
             'rules' => [
                 [
-                    'allow' => false,
-                    'actions' => ['index', 'create', 'update', 'delete', 'view'],
-                    'roles' => ['?'],
-                    'denyCallback' => function ($rule, $action) {
-                        $this->redirect(['auth/login']);
-                    }
-                ],
-                [
                     'allow' => true,
                     'roles' => ['@'],
                     'actions' => ['index', 'create', 'update', 'delete', 'view'],
                     'matchCallback' => function ($rule, $action) {
                         if (Yii::$app->user->getIdentity()->role == User::USER_ROLE)
-                            $this->redirect(['book/index']);
+                            $this->redirect('/book');
 
                         return true;
                     }
@@ -85,7 +77,7 @@ class AuthorController extends Controller
      */
     public function actionView($id)
     {
-        $model = Author::find()->select('*')->where(['authors.id' => $id])->with('books')->one();
+        $model = $this->findModel($id);
 
         return $this->render('view', [
             'model' => $this->findModel($id),

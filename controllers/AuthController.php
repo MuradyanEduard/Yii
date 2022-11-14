@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Author;
+use app\models\LoginForm;
 use app\models\User;
 use Yii;
 use yii\filters\AccessControl;
@@ -10,7 +11,7 @@ use yii\rbac\DbManager;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
-use app\models\LoginForm;
+use app\models\SignupForm;
 use app\models\ContactForm;
 
 class AuthController extends Controller
@@ -56,11 +57,12 @@ class AuthController extends Controller
     public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
-            return $this->redirect(['book/index']);
+            return $this->redirect('/book');
         }
+
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->redirect(['book/index']);
+            return $this->redirect('/book');
         }
 
         return $this->render('login', [
@@ -76,38 +78,24 @@ class AuthController extends Controller
     public function actionLogout()
     {
         Yii::$app->user->logout();
-        return $this->redirect('index');
+        return $this->redirect('/');
     }
 
-    public function actionRegistration()
+    public function actionSignup()
     {
-        $user = new User();
+        $model = new SignupForm();
 
-        if ($this->request->isPost && $user->load($this->request->post())) {
-            $author = new Author();
-            $author->name = $user->login;
-            $author->booksArr = [''];
-            $author->save();
+        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
+            Yii::$app->session->setFlash('success', 'You successfully registered.');
 
-            $user->role = 1;
-            $user->author_id = Yii::$app->db->getLastInsertID();
-            $user->authkey = "test100key";
-            $user->accessToken = "100-token";
-            $user->save();
-
-            $model = new LoginForm();
-            $model->username = $user->login;
-            $model->password = $user->password;
-            $model->login();
-
-            return $this->redirect(['book/index']);
-        } else {
-            $user->loadDefaultValues();
+            return $this->redirect(['/']);
         }
 
-        return $this->render('Registration', [
-            'model' => $user,
+        return $this->render('signup', [
+            'model' => $model,
         ]);
     }
+
+
 
 }

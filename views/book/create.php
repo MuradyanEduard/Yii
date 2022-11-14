@@ -21,9 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
 
-    <?php
-        if(Yii::$app->user->getIdentity()->role == 0) {
-    ?>
+    <?php if(Yii::$app->user->getIdentity()->role == \app\models\User::ADMIN_ROLE) : ?>
     <?= $form->field($model, 'authorsArr')->widget(Select2::className(), [
         'name' => 'authArr',
         'data' => ArrayHelper::map(\app\models\Author::find()->asArray()->all(), 'id', 'name'),
@@ -33,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 
-    <?php } ?>
+    <?php endif ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

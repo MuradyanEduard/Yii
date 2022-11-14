@@ -22,9 +22,7 @@ $this->params['breadcrumbs'][] = 'Update';
     <?= $form->field($model, 'id')->hiddenInput(['maxlength' => true])->label('') ?>
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?php
-    if(Yii::$app->user->getIdentity()->role == 0) {
-    ?>
+    <?php if(Yii::$app->user->getIdentity()->role ==\app\models\User::ADMIN_ROLE): ?>
 
     <?= $form->field($model, 'authorsArr')->widget(Select2::className(), [
         'name' => 'authorsArr',
@@ -35,7 +33,7 @@ $this->params['breadcrumbs'][] = 'Update';
         ],
     ]); ?>
 
-    <?php } ?>
+    <?php endif ?>
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>

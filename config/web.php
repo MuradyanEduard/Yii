@@ -7,7 +7,7 @@ $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
-    'defaultRoute' => 'auth/login',
+    'defaultRoute' => 'auth',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
@@ -25,6 +25,7 @@ $config = [
             'enableAutoLogin' => true,
         ],
         'errorHandler' => [
+            //ste inch petqa poxel??
             'errorAction' => 'auth/error',
         ],
         'mailer' => [
@@ -43,13 +44,19 @@ $config = [
             ],
         ],
         'db' => $db,
-        /*'urlManager' => [
+        'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                '/' => 'auth/login',
+                '/signup' => 'auth/signup',
+                '/book' => 'book/index',
+                '/book_create' => 'book/create',
+                '/author' => 'author/index',
+                '/author_create' => 'author/create',
             ],
         ],
-        */
+
     ],
     'params' => $params,
     'modules' => [

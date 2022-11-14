@@ -27,19 +27,11 @@ class BookController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['index', 'create','update', 'delete','view'],
+                'only' => ['index', 'create', 'update', 'delete', 'view'],
                 'rules' => [
                     [
-                        'allow' => false,
-                        'actions' => ['index', 'create','update', 'delete','view'],
-                        'roles' => ['?'],
-                        'denyCallback' => function ($rule, $action) {
-                            $this->redirect(['auth/login']);
-                        }
-                    ],
-                    [
                         'allow' => true,
-                        'actions' => ['index', 'create','update', 'delete','view'],
+                        'actions' => ['index', 'create', 'update', 'delete', 'view'],
                         'roles' => ['@'],
                     ],
                 ],
@@ -84,8 +76,8 @@ class BookController extends Controller
      */
     public function actionView($id)
     {
-        if(Yii::$app->user->getIdentity()->getId() == $id)
-            $this->redirect('book/index');
+        if (Yii::$app->user->getIdentity()->getId() == $id)
+            $this->redirect('/book');
 
         $model = $this->findModel($id);
 
@@ -104,7 +96,7 @@ class BookController extends Controller
     {
         $model = new Book();
 
-        if(Yii::$app->user->getIdentity()->role == User::USER_ROLE)
+        if (Yii::$app->user->getIdentity()->role == User::USER_ROLE)
             $model->authorsArr = [Yii::$app->user->getIdentity()->author_id];
 
         if ($model->load($this->request->post()) && $model->save()) {
@@ -114,7 +106,7 @@ class BookController extends Controller
                 $book_author->author_id = $authorId;
                 $book_author->save();
             }
-            return $this->redirect('index');
+            return $this->redirect('/book');
         } else {
             $model->loadDefaultValues();
         }
@@ -136,6 +128,30 @@ class BookController extends Controller
     {
         //Books Update
         $model = $this->findModel($id);
+
+        if (Yii::$app->user->getIdentity()->role == User::USER_ROLE && $model->load($this->request->post())) {
+            $existAuthorIdArr = [];
+
+            $cond = false;
+            foreach ($model->authors as $author) {
+                array_push($existAuthorIdArr, $author->id);
+                if($author->id == Yii::$app->user->getIdentity()->getId())
+                {
+                    $cond = true;
+                }
+            }
+
+            if(!$cond)
+            {
+                $this->redirect('/book');
+            }
+
+            $model->authorsArr = $existAuthorIdArr;
+            $model->save();
+
+            $this->redirect('/book');
+        }
+
 
         if ($model->load($this->request->post()) && $model->save()) {
 
@@ -167,7 +183,7 @@ class BookController extends Controller
 
             BookAuthors::deleteAll(['book_id' => $id, 'author_id' => $existAuthorIdArr]);
 
-            return $this->redirect('index');
+            return $this->redirect('/book');
         }
 
         return $this->render('update', [
@@ -186,7 +202,7 @@ class BookController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-        return $this->redirect(['index']);
+        return $this->redirect(['/book']);
     }
 
 
