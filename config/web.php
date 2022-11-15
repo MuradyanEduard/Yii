@@ -51,9 +51,9 @@ $config = [
                 '/' => 'auth/login',
                 '/signup' => 'auth/signup',
                 '/book' => 'book/index',
-                '/book_create' => 'book/create',
+                '/book/create' => 'book/create',
                 '/author' => 'author/index',
-                '/author_create' => 'author/create',
+                '/author/create' => 'author/create',
             ],
         ],
 

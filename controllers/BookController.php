@@ -77,7 +77,7 @@ class BookController extends Controller
     public function actionView($id)
     {
         if (Yii::$app->user->getIdentity()->getId() == $id)
-            $this->redirect('/book');
+            $this->redirect(['/book']);
 
         $model = $this->findModel($id);
 
@@ -96,21 +96,32 @@ class BookController extends Controller
     {
         $model = new Book();
 
-        if (Yii::$app->user->getIdentity()->role == User::USER_ROLE)
-            $model->authorsArr = [Yii::$app->user->getIdentity()->author_id];
-
-        if ($model->load($this->request->post()) && $model->save()) {
-            foreach ($model->authorsArr as $authorId) {
-                $book_author = new BookAuthors();
-                $book_author->book_id = $model->id;
-                $book_author->author_id = $authorId;
-                $book_author->save();
+        if (Yii::$app->user->getIdentity()->role == User::ADMIN_ROLE) {
+            if ($model->load($this->request->post()) && $model->save()) {
+                foreach ($model->authorsArr as $authorId) {
+                    $book_author = new BookAuthors();
+                    $book_author->book_id = $model->id;
+                    $book_author->author_id = $authorId;
+                    $book_author->save();
+                }
+                return $this->redirect(['/book']);
             }
-            return $this->redirect('/book');
-        } else {
-            $model->loadDefaultValues();
         }
 
+        if (Yii::$app->user->getIdentity()->role == User::USER_ROLE) {
+            $model->authorsArr = [Yii::$app->user->getIdentity()->author_id];
+            if ($model->load($this->request->post()) && $model->save()) {
+                {
+                    $book_author = new BookAuthors();
+                    $book_author->book_id = $model->id;
+                    $book_author->author_id = Yii::$app->user->getIdentity()->author_id;
+                    $book_author->save();
+                    return $this->redirect(['/book']);
+                }
+            }
+        }
+
+        $model->loadDefaultValues();
         return $this->render('create', [
             'model' => $model,
         ]);
@@ -129,31 +140,7 @@ class BookController extends Controller
         //Books Update
         $model = $this->findModel($id);
 
-        if (Yii::$app->user->getIdentity()->role == User::USER_ROLE && $model->load($this->request->post())) {
-            $existAuthorIdArr = [];
-
-            $cond = false;
-            foreach ($model->authors as $author) {
-                array_push($existAuthorIdArr, $author->id);
-                if($author->id == Yii::$app->user->getIdentity()->getId())
-                {
-                    $cond = true;
-                }
-            }
-
-            if(!$cond)
-            {
-                $this->redirect('/book');
-            }
-
-            $model->authorsArr = $existAuthorIdArr;
-            $model->save();
-
-            $this->redirect('/book');
-        }
-
-
-        if ($model->load($this->request->post()) && $model->save()) {
+        if (Yii::$app->user->getIdentity()->role == User::ADMIN_ROLE && $model->load($this->request->post()) && $model->save()) {
 
             $newAuthorIdArr = $model->authorsArr;
             $existAuthorIdArr = [];
@@ -183,8 +170,15 @@ class BookController extends Controller
 
             BookAuthors::deleteAll(['book_id' => $id, 'author_id' => $existAuthorIdArr]);
 
-            return $this->redirect('/book');
+            return $this->redirect(['/book']);
         }
+
+        if (Yii::$app->user->getIdentity()->role == User::USER_ROLE && $model->load($this->request->post())) {
+            $model->authorsArr = [''];
+            $model->save();
+            $this->redirect(['/book']);
+        }
+
 
         return $this->render('update', [
             'model' => $model,

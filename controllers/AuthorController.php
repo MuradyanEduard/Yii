@@ -40,7 +40,7 @@ class AuthorController extends Controller
                     'actions' => ['index', 'create', 'update', 'delete', 'view'],
                     'matchCallback' => function ($rule, $action) {
                         if (Yii::$app->user->getIdentity()->role == User::USER_ROLE)
-                            $this->redirect('/book');
+                            $this->redirect('[/book]');
 
                         return true;
                     }
@@ -142,7 +142,7 @@ class AuthorController extends Controller
     public function actionDelete($id)
     {
         $this->findModel($id)->delete();
-        return $this->redirect(['index']);
+        return $this->redirect(['/']);
     }
 
     /**

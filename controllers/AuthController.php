@@ -57,12 +57,12 @@ class AuthController extends Controller
     public function actionLogin()
     {
         if (!Yii::$app->user->isGuest) {
-            return $this->redirect('/book');
+            return $this->redirect(['/book']);
         }
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->redirect('/book');
+            return $this->redirect(['/book']);
         }
 
         return $this->render('login', [
@@ -78,7 +78,7 @@ class AuthController extends Controller
     public function actionLogout()
     {
         Yii::$app->user->logout();
-        return $this->redirect('/');
+        return $this->redirect(['/']);
     }
 
     public function actionSignup()
@@ -95,7 +95,6 @@ class AuthController extends Controller
             'model' => $model,
         ]);
     }
-
 
 
 }
