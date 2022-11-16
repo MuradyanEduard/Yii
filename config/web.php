@@ -13,6 +13,7 @@ $config = [
         '@npm'   => '@vendor/npm-asset',
     ],
     'components' => [
+
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => '6FlzESRtRHQLujfSAA8G60KoAPqNAHn4',
@@ -59,11 +60,6 @@ $config = [
 
     ],
     'params' => $params,
-    'modules' => [
-        'rbac' =>  [
-            'class' => 'johnitvn\rbacplus\Module'
-        ]
-    ]
 ];
 
 if (YII_ENV_DEV) {
