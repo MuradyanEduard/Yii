@@ -14,27 +14,37 @@ use yii\widgets\DetailView;
 /** @var yii\web\View $this */
 /** @var app\models\Book $model */
 
-
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Books', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 
 ?>
-    <div class="book-view">
+<div class="book-view">
 
-        <h1><?= Html::encode($this->title) ?></h1>
+    <h1><?= Html::encode($this->title) ?></h1>
 
-        <?= DetailView::widget([
-            'model' => $model,
-            'attributes' => [
-                'id',
-                'name',
-            ],
-        ]) ?>
+    <?= DetailView::widget([
+        'model' => $model,
+        'attributes' => [
+            'id',
+            'name',
+            'price',
+            'count'
+        ],
+    ]) ?>
 
-    </div>
+</div>
 
 
 <?php \app\widgets\AuthorList::begin(['book' => $model]) ?>
 <?php \app\widgets\AuthorList::end() ?>
+
+<div class="form-group">
+    <?php $form = ActiveForm::begin(['action' => 'order/add', 'method' => 'post']); ?>
+    <?= $form->field($model, 'id')->hiddenInput(['maxlength' => true])->label('') ?>
+    <?= $form->field($model, 'count')->textInput(['maxlength' => true]) ?>
+    <?= Html::submitButton('Add Product', ['class' => 'btn btn-success']) ?>
+    <?php ActiveForm::end(); ?>
+</div>
+

@@ -14,15 +14,17 @@ use yii\widgets\ActiveForm;
 
 $this->title = 'Authors';
 $this->params['breadcrumbs'][] = $this->title;
+
 ?>
 <div class="author-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
+    <?php if(Yii::$app->user->getIdentity()->role != \app\models\User::CUSTOMER_ROLE): ?>
     <p>
         <?= Html::a('Create Author', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-
+    <?php endIf ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -46,10 +48,22 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filter' => yii\helpers\ArrayHelper::map(Book::find()->all(), 'id', 'name'),
             ],
             [
-                'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Author $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                }
+                'class' => 'yii\grid\ActionColumn',
+                'visibleButtons' => [
+                    'view' => true,
+                    'update' => function($model){
+                        if (Yii::$app->user->identity->role == \app\models\User::CUSTOMER_ROLE)
+                            return false;
+                        else
+                            return true;
+                    },
+                    'delete' => function($model){
+                        if (Yii::$app->user->identity->role == \app\models\User::CUSTOMER_ROLE)
+                            return false;
+                        else
+                            return true;
+                    },
+                ]
             ],
         ],
     ]); ?>

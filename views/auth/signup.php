@@ -24,6 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         <?php $form = ActiveForm::begin([
                             'id' => 'login-form',
+
                         ]); ?>
 
 
@@ -42,6 +43,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
                         <div class="form-outline mb-4">
                             <?= $form->field($model, 'password')->passwordInput() ?>
+                        </div>
+
+                        <div class="form-outline mb-4">
+                            <?= $form->field($model, 'role')
+                                ->dropDownList(['1' => 'Author', '2' => 'Customer'],['class' => 'form-control']) ?>
                         </div>
 
                         <?= Html::submitButton('Register', ['class' => 'btn btn-primary btn-lg btn-block', 'name' => 'login-button']) ?>

@@ -16,6 +16,7 @@ class SignupForm extends Model
     public $login;
     public $password;
     public $email;
+    public $role;
 
     /**
      * @return array the validation rules.
@@ -24,7 +25,7 @@ class SignupForm extends Model
     {
         return [
             // login and password are both required
-            [['login', 'password','email'], 'required'],
+            [['login', 'password','email','role'], 'required'],
             // rememberMe must be a boolean value
             [['email'],'email']
         ];
@@ -53,7 +54,7 @@ class SignupForm extends Model
         $user->login = $model->login;
         $user->password = $model->password;
         $user->email = $model->email;
-        $user->role = 1;
+        $user->role = $model->role;
         $user->author_id = $author->id;
         $user->authkey = Yii::$app->security->generateRandomString();
         $user->accessToken = Yii::$app->security->generateRandomString();
