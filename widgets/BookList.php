@@ -44,6 +44,8 @@ class BookList extends Widget
             'columns' => [
                 'id',
                 'name',
+                'price',
+                'count'
             ],
         ]);
 
