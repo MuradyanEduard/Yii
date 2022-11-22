@@ -37,14 +37,31 @@ class AuthorController extends Controller
                 [
                     'allow' => true,
                     'roles' => ['@'],
-                    'actions' => ['index', 'create', 'update', 'delete', 'view'],
+                    'actions' => ['view'],
+                ],
+                [
+                    'allow' => true,
+                    'roles' => ['@'],
+                    'actions' => ['index'],
                     'matchCallback' => function ($rule, $action) {
                         if (Yii::$app->user->getIdentity()->role == User::USER_ROLE)
-                            $this->redirect('[/book]');
+                            return false;
 
                         return true;
                     }
                 ],
+                [
+                    'allow' => true,
+                    'roles' => ['@'],
+                    'actions' => ['create', 'update', 'delete'],
+                    'matchCallback' => function ($rule, $action) {
+                        if (Yii::$app->user->getIdentity()->role == User::CUSTOMER_ROLE ||
+                            Yii::$app->user->getIdentity()->role == User::USER_ROLE)
+                                return false;
+
+                        return true;
+                    }
+                ]
 
             ],
 

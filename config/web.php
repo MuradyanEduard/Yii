@@ -12,6 +12,11 @@ $config = [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
+    'container' => [
+        'definitions' => [
+            \yii\widgets\LinkPager::class => \yii\bootstrap5\LinkPager::class,
+        ],
+    ],
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
@@ -54,6 +59,10 @@ $config = [
                 '/book/create' => 'book/create',
                 '/author' => 'author/index',
                 '/author/create' => 'author/create',
+                '/book/order/add' => 'order/add-product',
+                '/book/order/remove' => 'order/add-remove',
+                '/book/order/create' => 'order/create',
+                '/order' => 'order/index',
             ],
         ],
 

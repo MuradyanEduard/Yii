@@ -33,10 +33,12 @@ class Book extends \yii\db\ActiveRecord
     {
         return [
             [['id'],'safe'],
-            [['name'], 'required'],
+            [['name','price','count'], 'required'],
             [['name'], 'string', 'max' => 255],
             [['name'], 'unique'],
             [['authorsArr'], 'required', 'message' => "Select Authors"],
+            [['price'],'number', 'numberPattern' => '/(^\d*\.?\d*[0-9]+\d*$)|(^[0-9]+\d*\.\d*$)/','message' => 'Number should be decimal!'],
+            [['count'],'number', 'numberPattern' => '/(^\d*?\d*[0-9]+\d*$)/','message' => 'Number should be positive and natural!'],
         ];
     }
 
@@ -48,7 +50,9 @@ class Book extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'name' => 'Name',
-            'authors' => 'Authors'
+            'authors' => 'Authors',
+            'price' => 'Price',
+            'count' => 'Count'
         ];
     }
 
@@ -67,6 +71,11 @@ class Book extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Author::class, ['id' => 'author_id'])
             ->via('booksAuthors');
+    }
+
+    public function getProducts()
+    {
+        return $this->hasMany(OrderProduct::class, ['book_id' => 'id']);
     }
 }
 

@@ -82,3 +82,30 @@ a.desc:after {
 .nav > li > form > button.logout:focus {
     outline: none;
 }
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 2px 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+
+.products_basket_window{
+    position: absolute;
+    display:none;
+    box-shadow: -7px 6px 17px -3px rgba(0,0,0,0.75);
+    -webkit-box-shadow: -7px 6px 17px -3px rgba(0,0,0,0.75);
+    -moz-box-shadow: -7px 6px 17px -3px rgba(0,0,0,0.75);
+    right: 0;
+    top: 0;
+    min-height: 100vh;
+    background: white;z-index: 9999;
+}

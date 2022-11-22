@@ -19,7 +19,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-
+    <?= $form->field($model, 'price')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'count')->textInput(['maxlength' => true]) ?>
 
     <?php if(Yii::$app->user->getIdentity()->role == \app\models\User::ADMIN_ROLE) : ?>
     <?= $form->field($model, 'authorsArr')->widget(Select2::className(), [
