@@ -14,7 +14,9 @@ class m221103_074612_books extends Migration
     {
         $this->createTable('{{%books}}', [
             'id' => $this->primaryKey(),
-            'name' => $this->string()
+            'name' => $this->string(),
+            'price'=> $this->decimal(),
+            'count'=> $this->integer(),
         ]);
     }
 

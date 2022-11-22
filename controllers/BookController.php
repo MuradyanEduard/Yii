@@ -7,6 +7,7 @@ use app\models\AuthorSearch;
 use app\models\Book;
 use app\models\BookAuthors;
 use app\models\BookSearch;
+use app\models\Order;
 use app\models\User;
 use Yii;
 use yii\filters\AccessControl;
@@ -31,9 +32,20 @@ class BookController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['index', 'create', 'update', 'delete', 'view'],
+                        'actions' => ['index', 'view'],
                         'roles' => ['@'],
                     ],
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                        'actions' => ['create', 'update', 'delete'],
+                        'matchCallback' => function ($rule, $action) {
+                            if (Yii::$app->user->getIdentity()->role == User::CUSTOMER_ROLE)
+                                return false;
+
+                            return true;
+                        }
+                    ]
                 ],
             ],
         ];
@@ -53,6 +65,7 @@ class BookController extends Controller
 
         switch (Yii::$app->user->getIdentity()->role) {
             case User::ADMIN_ROLE:
+            case User::CUSTOMER_ROLE:
                 $searchModel = new BookSearch();
                 $dataProvider = $searchModel->search($this->request->queryParams);
                 break;
@@ -76,8 +89,8 @@ class BookController extends Controller
      */
     public function actionView($id)
     {
-        if (Yii::$app->user->getIdentity()->getId() == $id)
-            $this->redirect(['/book']);
+//        if (Yii::$app->user->getIdentity()->getId() == $id)
+//            $this->redirect(['/book']);
 
         $model = $this->findModel($id);
 
