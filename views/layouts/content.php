@@ -9,7 +9,6 @@ use yii\widgets\DetailView;
 ?>
 
 <div class="show_cart" style="position:fixed; z-index: 9999; right: 0; cursor:pointer; top: 10%; width: 60px; border-radius: 8px 0px 0px 8px; background: #0a73bb; padding-left: 5px;"><?php echo Html::img('@web/img/shopping-cart.png', ['width' => '32px']) ?></div>
-<?php if(Yii::$app->user->identity->role == \app\models\User::CUSTOMER_ROLE): ?>
 <div class="products_basket_window" style="">
     <div class="col-12">
         <div class="hide_cart" style="float:right; z-index: 9999; cursor:pointer;margin: 20px;">
@@ -68,7 +67,7 @@ use yii\widgets\DetailView;
         </div>
     </div>
 </div>
-<?php endif; ?>
+
 <div class="content-wrapper">
     <!-- Main content -->
     <div class="content col-11">
