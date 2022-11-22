@@ -39,13 +39,14 @@ use yii\helpers\Url;
 
         <!-- Sidebar Menu -->
         <nav class="mt-2">
-            <?php if (Yii::$app->user->identity->role != \app\models\User::USER_ROLE): ?>
+            <?php if (Yii::$app->user->identity->role == \app\models\User::ADMIN_ROLE): ?>
                 <?php echo \hail812\adminlte\widgets\Menu::widget([
                     'items' => [
-                        ['label' => 'Book List', 'icon' => 'square', 'url' => ['book/index']],
-                        ['label' => 'Book Create', 'icon' => 'square', 'url' => ['book/create']],
-                        ['label' => 'Author List', 'icon' => 'circle', 'url' => ['author/index']],
-                        ['label' => 'Author Create', 'icon' => 'circle', 'url' => ['author/create']],
+                        ['label' => 'Book List', 'icon' => 'square', 'url' => ['/book']],
+                        ['label' => 'Book Create', 'icon' => 'square', 'url' => ['/book/create']],
+                        ['label' => 'Author List', 'icon' => 'circle', 'url' => ['/author']],
+                        ['label' => 'Author Create', 'icon' => 'circle', 'url' => ['/author/create']],
+                        ['label' => 'Order List', 'icon' => 'circle', 'url' => ['/order']],
                         ['label' => 'Log out', 'icon' => 'dot-circle',
                             'template' => ""
                                 . Html::beginForm(['/auth/logout'])
@@ -63,6 +64,25 @@ use yii\helpers\Url;
                     'items' => [
                         ['label' => 'Book List', 'icon' => 'square', 'url' => ['book/index']],
                         ['label' => 'Book Create', 'icon' => 'square', 'url' => ['book/create']],
+                        ['label' => 'Order List', 'icon' => 'circle', 'url' => ['/order']],
+                        ['label' => 'Log out', 'icon' => 'dot-circle',
+                            'template' => ""
+                                . Html::beginForm(['/auth/logout'])
+                                . Html::submitButton(
+                                    'Logout (' . Yii::$app->user->identity->login . ')',
+                                    ['class' => 'nav-link btn btn-link logout'])
+                                . Html::endForm(),
+                        ],
+                    ]
+                ]);
+                ?>
+            <?php endif ?>
+            <?php if (Yii::$app->user->identity->role == \app\models\User::CUSTOMER_ROLE): ?>
+                <?php echo \hail812\adminlte\widgets\Menu::widget([
+                    'items' => [
+                        ['label' => 'Book List', 'icon' => 'square', 'url' => ['book/index']],
+                        ['label' => 'Author List', 'icon' => 'square', 'url' => ['author/index']],
+                        ['label' => 'Order List', 'icon' => 'circle', 'url' => ['/order']],
                         ['label' => 'Log out', 'icon' => 'dot-circle',
                             'template' => ""
                                 . Html::beginForm(['/auth/logout'])
@@ -76,8 +96,17 @@ use yii\helpers\Url;
                 ?>
             <?php endif ?>
 
+            <?php /*echo \hail812\adminlte\widgets\Menu::widget([
+                'items' => [
+                    ['label' => 'Gii',  'icon' => 'file-code', 'url' => ['/gii'], 'target' => '_blank'],
+                ]
+            ]);*/
+            ?>
         </nav>
         <!-- /.sidebar-menu -->
     </div>
     <!-- /.sidebar -->
 </aside>
+
+
+
